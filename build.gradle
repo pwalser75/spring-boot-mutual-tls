@@ -1,0 +1,78 @@
+defaultTasks 'clean', 'build', 'install'
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE")
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.17.0'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'com.github.ben-manes.versions'
+
+description = 'Spring Boot with mutual TLS'
+group = 'ch.frostnova'
+version = '1.0.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    jcenter()
+    mavenLocal()
+    mavenCentral()
+}
+
+jar { duplicatesStrategy = 'exclude' }
+
+compileJava.options.encoding = 'UTF-8'
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+def dateTimeFormat = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+def buildDate = java.time.LocalDateTime.now()
+
+jar {
+    manifest {
+        attributes(
+                "Name": project.name,
+                "Version": project.version,
+                "Build-Date": dateTimeFormat.format(buildDate)
+        )
+    }
+}
+
+ext.libs = [
+        testbase      : [
+                "junit:junit:4.12",
+                "org.mockito:mockito-core:2.12.0"
+        ],
+        springBoot    : [
+                "org.springframework.boot:spring-boot-starter-data-jpa:1.5.8.RELEASE",
+                "org.springframework.boot:spring-boot-starter-jersey:1.5.8.RELEASE"
+        ],
+        springBootTest: [
+                "org.springframework.boot:spring-boot-starter-test:1.5.8.RELEASE"
+        ],
+        hsqldb        : [
+                "org.hsqldb:hsqldb:2.4.0"
+        ],
+        swagger       : [
+                'io.swagger:swagger-jersey2-jaxrs:1.5.17'
+        ]
+]
+
+dependencies {
+    compile libs.springBoot
+    compile libs.swagger
+    testCompile libs.testbase
+    testCompile libs.springBootTest
+    runtime libs.hsqldb
+}

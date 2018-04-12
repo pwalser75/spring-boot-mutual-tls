@@ -1,0 +1,20 @@
+server:
+  port: 443
+  ssl:
+    enabled: true
+    key-alias: "test-server"
+    key-store: "classpath:server-keystore.jks"
+    key-store-password: "keystore"
+    key-password: "keystore"
+
+example:
+  text: Example text
+  number: 12345
+  options: one, two, three
+  list:
+    - first
+    - second
+    - third
+  properties:
+    foo: bla
+    pi: 3.14159265
