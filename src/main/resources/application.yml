@@ -3,9 +3,11 @@ server:
   ssl:
     enabled: true
     key-alias: "test-server"
-    key-store: "classpath:server-keystore.jks"
-    key-store-password: "keystore"
-    key-password: "keystore"
+    key-store: "classpath:test-server-keystore.jks"
+    key-store-password: "Server-5ECr3T!"
+    key-password: "Server-5ECr3T!"
+    trust-store: "classpath:test-server-keystore.jks"
+    trust-store-password: "Server-5ECr3T!"
 
 example:
   text: Example text

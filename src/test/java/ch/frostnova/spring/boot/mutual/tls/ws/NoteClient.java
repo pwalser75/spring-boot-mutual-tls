@@ -1,6 +1,8 @@
 package ch.frostnova.spring.boot.mutual.tls.ws;
 
 import ch.frostnova.spring.boot.mutual.tls.api.model.Note;
+import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.logging.LoggingFeature;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -8,8 +10,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-import org.glassfish.jersey.client.ClientProperties;
-import org.glassfish.jersey.logging.LoggingFeature;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.util.List;
@@ -34,19 +34,28 @@ public class NoteClient implements AutoCloseable {
 
     private static ClientBuilder createClientBuilder() {
 
-        try (InputStream in = NoteClient.class.getResourceAsStream("/client-truststore.jks")) {
-            KeyStore truststore = KeyStore.getInstance(KeyStore.getDefaultType());
-            truststore.load(in, "truststore".toCharArray());
+        KeyStore keystore = loadKeystore("/test-client-keystore.jks", "Client-5ECr3T!");
+        KeyStore truststore = loadKeystore("/test-client-truststore.jks", "Client-5ECr3T!");
+        String keyPassword = "Client-5ECr3T!";
 
-            return ClientBuilder.newBuilder()
-                    .trustStore(truststore)
-                    .property(ClientProperties.CONNECT_TIMEOUT, 500)
-                    .property(ClientProperties.READ_TIMEOUT, 5000)
-					.property(LoggingFeature.LOGGING_FEATURE_VERBOSITY_CLIENT, LoggingFeature.Verbosity.PAYLOAD_ANY)
-					.property(LoggingFeature.LOGGING_FEATURE_LOGGER_LEVEL_CLIENT, "WARNING")
-                    .hostnameVerifier((hostname, sslSession) -> "localhost".equals(hostname));
+        return ClientBuilder.newBuilder()
+                .keyStore(keystore, keyPassword)
+                .trustStore(truststore)
+                .property(ClientProperties.CONNECT_TIMEOUT, 500)
+                .property(ClientProperties.READ_TIMEOUT, 5000)
+                .property(LoggingFeature.LOGGING_FEATURE_VERBOSITY_CLIENT, LoggingFeature.Verbosity.PAYLOAD_ANY)
+                .property(LoggingFeature.LOGGING_FEATURE_LOGGER_LEVEL_CLIENT, "WARNING")
+                .hostnameVerifier((hostname, sslSession) -> "localhost".equals(hostname));
+
+    }
+
+    private static KeyStore loadKeystore(String resource, String password) {
+        try (InputStream in = NoteClient.class.getResourceAsStream(resource)) {
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keyStore.load(in, password.toCharArray());
+            return keyStore;
         } catch (Exception ex) {
-            throw new RuntimeException("Unable to load client truststore", ex);
+            throw new RuntimeException("Unable to load keystore '" + resource + "'", ex);
         }
     }
 
