@@ -14,9 +14,6 @@ import java.util.stream.Stream;
 
 /**
  * X.509 authentication settings
- *
- * @author wap
- * @since 13.04.2018
  */
 @EnableWebSecurity
 public class X509AuthenticationServer extends WebSecurityConfigurerAdapter {

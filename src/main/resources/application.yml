@@ -1,6 +1,6 @@
 server:
   port: 443
-  ssl:
+  ssl: &serverssl
     enabled: true
     protocol: TLSv1.2
     enabled-protocols: TLSv1.1,TLSv1.2
@@ -13,14 +13,9 @@ server:
     trust-store-password: "Server-5ECr3T!"
     client-auth: need
 
-example:
-  text: Example text
-  number: 12345
-  options: one, two, three
-  list:
-    - first
-    - second
-    - third
-  properties:
-    foo: bla
-    pi: 3.14159265
+management:
+  port: 9000
+  address: "127.0.0.1"
+  ssl: *serverssl
+  security:
+    enabled: true

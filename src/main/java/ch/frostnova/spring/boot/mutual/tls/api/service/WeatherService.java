@@ -6,9 +6,6 @@ import java.util.List;
 
 /**
  * Weather service
- *
- * @author wap
- * @since 13.04.2018
  */
 public interface WeatherService {
 

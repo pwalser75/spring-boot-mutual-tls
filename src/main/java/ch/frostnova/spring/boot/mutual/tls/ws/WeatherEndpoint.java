@@ -12,9 +12,6 @@ import java.util.List;
 
 /**
  * REST endpoint for weather forecast
- *
- * @author wap
- * @since 13.04.2018
  */
 @RestController
 @RequestMapping(value = "/api")

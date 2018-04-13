@@ -12,9 +12,6 @@ import java.util.List;
 
 /**
  * Weather service test implementation
- *
- * @author wap
- * @since 13.04.2018
  */
 @Service
 public class WeatherServiceImpl implements WeatherService {

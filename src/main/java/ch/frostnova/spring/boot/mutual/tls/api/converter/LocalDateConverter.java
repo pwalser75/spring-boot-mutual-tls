@@ -3,10 +3,7 @@ package ch.frostnova.spring.boot.mutual.tls.api.converter;
 import java.time.LocalDate;
 
 /**
- * JAXB converter for {@link LocalDate}
- *
- * @author pwalser
- * @since 25.01.2018
+ * JSON converter for {@link LocalDate}
  */
 public final class LocalDateConverter {
 
