@@ -1,3 +1,7 @@
+spring:
+  application:
+    name: Spring Boot Mutual TLS
+
 server:
   port: 443
   ssl: &serverssl
