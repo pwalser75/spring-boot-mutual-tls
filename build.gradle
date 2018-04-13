@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.1.RELEASE")
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.17.0'
     }
 }
@@ -50,12 +50,12 @@ jar {
 }
 
 ext {
-    springVersion = '1.5.10.RELEASE'
+    springVersion = '2.0.1.RELEASE'
 
     libs = [
             testbase      : [
                     "junit:junit:4.12",
-                    "org.mockito:mockito-core:2.12.0"
+                    "org.mockito:mockito-core:2.18.0"
             ],
             springBoot    : [
                     "org.springframework.boot:spring-boot-starter-web:${springVersion}",
@@ -64,9 +64,7 @@ ext {
             springBootTest: [
                     "org.springframework.boot:spring-boot-starter-test:${springVersion}",
                     "org.springframework.boot:spring-boot-starter-jersey:${springVersion}",
-            ],
-            hsqldb        : [
-                    "org.hsqldb:hsqldb:2.4.0"
+                    "javax.xml.bind:jaxb-api:2.2.11"
             ]
     ]
 }
@@ -75,5 +73,4 @@ dependencies {
     compile libs.springBoot
     testCompile libs.testbase
     testCompile libs.springBootTest
-    runtime libs.hsqldb
 }
