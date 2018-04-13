@@ -21,7 +21,7 @@ public abstract class FunctionalSerializer<T> extends JsonSerializer<T> {
     /**
      * Constructor, expects a converter function.
      *
-     * @param converter
+     * @param converter converter
      */
     protected FunctionalSerializer(Function<T, String> converter) {
         if (converter == null) {

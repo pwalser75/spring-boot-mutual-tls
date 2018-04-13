@@ -49,29 +49,30 @@ jar {
     }
 }
 
-ext.libs = [
-        testbase      : [
-                "junit:junit:4.12",
-                "org.mockito:mockito-core:2.12.0"
-        ],
-        springBoot    : [
-                "org.springframework.boot:spring-boot-starter-data-jpa:1.5.8.RELEASE",
-                "org.springframework.boot:spring-boot-starter-jersey:1.5.8.RELEASE"
-        ],
-        springBootTest: [
-                "org.springframework.boot:spring-boot-starter-test:1.5.8.RELEASE"
-        ],
-        hsqldb        : [
-                "org.hsqldb:hsqldb:2.4.0"
-        ],
-        swagger       : [
-                'io.swagger:swagger-jersey2-jaxrs:1.5.17'
-        ]
-]
+ext {
+    springVersion = '1.5.10.RELEASE'
+
+    libs = [
+            testbase      : [
+                    "junit:junit:4.12",
+                    "org.mockito:mockito-core:2.12.0"
+            ],
+            springBoot    : [
+                    "org.springframework.boot:spring-boot-starter-web:${springVersion}",
+                    "org.springframework.boot:spring-boot-starter-security:${springVersion}"
+            ],
+            springBootTest: [
+                    "org.springframework.boot:spring-boot-starter-test:${springVersion}",
+                    "org.springframework.boot:spring-boot-starter-jersey:${springVersion}",
+            ],
+            hsqldb        : [
+                    "org.hsqldb:hsqldb:2.4.0"
+            ]
+    ]
+}
 
 dependencies {
     compile libs.springBoot
-    compile libs.swagger
     testCompile libs.testbase
     testCompile libs.springBootTest
     runtime libs.hsqldb

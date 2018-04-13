@@ -10,6 +10,9 @@ import java.util.function.Function;
 /**
  * JSON deserializer that uses a converter function to deserialize a value when the value is not null (otherwise,
  * <code>null</code> will be deserialized).
+ *
+ * @author pwalser
+ * @since 25.01.2018
  */
 public abstract class FunctionalDeserializer<T> extends JsonDeserializer<T> {
 
@@ -18,7 +21,7 @@ public abstract class FunctionalDeserializer<T> extends JsonDeserializer<T> {
     /**
      * Constructor, expects a converter function.
      *
-     * @param converter
+     * @param converter converter
      */
     protected FunctionalDeserializer(Function<String, T> converter) {
         if (converter == null) {
