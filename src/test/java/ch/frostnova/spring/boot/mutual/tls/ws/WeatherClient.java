@@ -43,8 +43,7 @@ public class WeatherClient implements AutoCloseable {
                 .property(ClientProperties.CONNECT_TIMEOUT, 500)
                 .property(ClientProperties.READ_TIMEOUT, 5000)
                 .property(LoggingFeature.LOGGING_FEATURE_VERBOSITY_CLIENT, LoggingFeature.Verbosity.PAYLOAD_ANY)
-                .property(LoggingFeature.LOGGING_FEATURE_LOGGER_LEVEL_CLIENT, "WARNING")
-                .hostnameVerifier((hostname, sslSession) -> "localhost".equals(hostname));
+                .property(LoggingFeature.LOGGING_FEATURE_LOGGER_LEVEL_CLIENT, "WARNING");
 
     }
 
