@@ -16,6 +16,9 @@ server:
     trust-store: "classpath:test-server-keystore.jks"
     trust-store-password: "Server-5ECr3T!"
     client-auth: need
+http:
+  server:
+    port: 80
 
 management:
   port: 9000
