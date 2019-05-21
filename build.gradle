@@ -6,8 +6,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.1.RELEASE")
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.17.0'
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.5.RELEASE")
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.21.0'
     }
 }
 
@@ -29,6 +29,11 @@ repositories {
     mavenCentral()
 }
 
+java {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+}
+
 jar { duplicatesStrategy = 'exclude' }
 
 compileJava.options.encoding = 'UTF-8'
@@ -36,30 +41,33 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-def dateTimeFormat = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-def buildDate = java.time.LocalDateTime.now()
-
-jar {
-    manifest {
-        attributes(
-                "Name": project.name,
-                "Version": project.version,
-                "Build-Date": dateTimeFormat.format(buildDate)
-        )
+dependencyUpdates.resolutionStrategy = {
+    componentSelection { rules ->
+        rules.all { ComponentSelection selection ->
+            boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier ->
+                selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
+            }
+            if (rejected) {
+                selection.reject('Release candidate')
+            }
+        }
     }
 }
 
 ext {
-    springVersion = '2.0.1.RELEASE'
+    junitVersion = '4.12'
+    mockitoVersion = '2.27.0'
+    springVersion = '2.1.5.RELEASE'
 
     libs = [
             testbase      : [
-                    "junit:junit:4.12",
-                    "org.mockito:mockito-core:2.18.0"
+                    "junit:junit:${junitVersion}",
+                    "org.mockito:mockito-core:${mockitoVersion}"
             ],
             springBoot    : [
                     "org.springframework.boot:spring-boot-starter-web:${springVersion}",
-                    "org.springframework.boot:spring-boot-starter-security:${springVersion}"
+                    "org.springframework.boot:spring-boot-starter-security:${springVersion}",
+                    "org.springframework.boot:spring-boot-starter-actuator:${springVersion}"
             ],
             springBootTest: [
                     "org.springframework.boot:spring-boot-starter-test:${springVersion}",
@@ -75,7 +83,7 @@ dependencies {
     testCompile libs.springBootTest
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.6'
-    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+task start(dependsOn: ['assemble', 'bootRun']) {
+    group = 'Start/Run'
+    description = 'Start the boot app'
 }

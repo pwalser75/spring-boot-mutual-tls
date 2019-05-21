@@ -33,8 +33,8 @@ public class WeatherClient implements AutoCloseable {
 
     private static ClientBuilder createClientBuilder() {
 
-        KeyStore keystore = loadKeystore("/test-client-keystore.jks", "Client-5ECr3T!");
-        KeyStore truststore = loadKeystore("/test-client-truststore.jks", "Client-5ECr3T!");
+        KeyStore keystore = loadKeystore("/test-client-keystore.p12", "Client-5ECr3T!");
+        KeyStore truststore = loadKeystore("/test-client-truststore.p12", "Client-5ECr3T!");
         String keyPassword = "Client-5ECr3T!";
 
         return ClientBuilder.newBuilder()

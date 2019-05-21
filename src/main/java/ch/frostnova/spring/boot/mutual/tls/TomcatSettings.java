@@ -3,9 +3,10 @@ package ch.frostnova.spring.boot.mutual.tls;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
-import org.apache.coyote.http11.Http11NioProtocol;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -25,6 +26,8 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties
 public class TomcatSettings {
 
+    private final static Logger logger = LoggerFactory.getLogger(TomcatSettings.class);
+
     @Value("${http.server.port}")
     private int serverPortHttp;
 
@@ -33,30 +36,28 @@ public class TomcatSettings {
 
     @Bean
     public ServletWebServerFactory servletContainer() {
-        TomcatServletWebServerFactory tomcat = new TomcatFactory();
-        tomcat.addAdditionalTomcatConnectors(createHttpConnector());
+        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
+            @Override
+            protected void postProcessContext(Context context) {
+                SecurityConstraint securityConstraint = new SecurityConstraint();
+                securityConstraint.setUserConstraint("CONFIDENTIAL");
+                SecurityCollection collection = new SecurityCollection();
+                collection.addPattern("/*");
+                securityConstraint.addCollection(collection);
+                context.addConstraint(securityConstraint);
+            }
+        };
+        tomcat.addAdditionalTomcatConnectors(redirectConnector());
         return tomcat;
     }
 
-
-    static class TomcatFactory extends TomcatServletWebServerFactory {
-        @Override
-        protected void postProcessContext(Context context) {
-            SecurityConstraint securityConstraint = new SecurityConstraint();
-            securityConstraint.setUserConstraint("CONFIDENTIAL");
-            SecurityCollection collection = new SecurityCollection();
-            collection.addPattern("/*");
-            securityConstraint.addCollection(collection);
-            context.addConstraint(securityConstraint);
-        }
-    }
-
-    private Connector createHttpConnector() {
-        Connector connector = new Connector(Http11NioProtocol.class.getName());
+    private Connector redirectConnector() {
+        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
         connector.setScheme("http");
         connector.setSecure(false);
         connector.setPort(serverPortHttp);
         connector.setRedirectPort(serverPortHttps);
+        logger.info("Redirecting HTTP port {} to HTTPS port {}", serverPortHttp, serverPortHttps);
         return connector;
     }
 }

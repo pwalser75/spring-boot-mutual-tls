@@ -10,10 +10,10 @@ server:
     enabled-protocols: TLSv1.1+TLSv1.2
     ciphers: TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
     key-alias: "test-server"
-    key-store: "classpath:test-server-keystore.jks"
+    key-store: "classpath:test-server-keystore.p12"
     key-store-password: "Server-5ECr3T!"
     key-password: "Server-5ECr3T!"
-    trust-store: "classpath:test-server-keystore.jks"
+    trust-store: "classpath:test-server-keystore.p12"
     trust-store-password: "Server-5ECr3T!"
     client-auth: need
 http:
@@ -21,12 +21,12 @@ http:
     port: 80
 
 management:
-  port: 9000
-  address: "127.0.0.1"
-  ssl: *serverssl
-  security:
-    enabled: true
-    
+  endpoints:
+    web:
+      base-path: /
+      exposure.include: health,metrics
+  endpoint.health.show-details: always
+
 logging:
   level:
     org.springframework: WARN
