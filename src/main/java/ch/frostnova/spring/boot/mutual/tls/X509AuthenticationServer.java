@@ -22,6 +22,7 @@ public class X509AuthenticationServer extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // Mutual TLS, extract user name from client certificate (CN field)
         http.authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
@@ -32,6 +33,7 @@ public class X509AuthenticationServer extends WebSecurityConfigurerAdapter {
 
     @Bean
     public UserDetailsService userDetailsService() {
+        // Minimal implementation of a user detail service: user with name and roles.
         return username -> new User(username, "",
                 AuthorityUtils.commaSeparatedStringToAuthorityList(
                         getRolesForUser(username).stream()
@@ -40,6 +42,10 @@ public class X509AuthenticationServer extends WebSecurityConfigurerAdapter {
     }
 
     private Set<String> getRolesForUser(String username) {
+
+        // Get roles for user from configuration or a directory (LDAP),
+        // or extract roles propagated by JWT or SAML or header (WAF).
+        // Here we just return a fixed set of roles for any authenticated user.
         return Stream.of("Test-User", "Admin").collect(Collectors.toSet());
     }
 }
