@@ -55,11 +55,15 @@ dependencyUpdates.resolutionStrategy = {
 }
 
 ext {
+    checkVersion = '1.0.0'
     junitVersion = '4.12'
     mockitoVersion = '2.27.0'
     springVersion = '2.1.5.RELEASE'
 
     libs = [
+            check         : [
+                    "ch.frostnova:check:${checkVersion}"
+            ],
             testbase      : [
                     "junit:junit:${junitVersion}",
                     "org.mockito:mockito-core:${mockitoVersion}"
@@ -78,6 +82,7 @@ ext {
 }
 
 dependencies {
+    compile libs.check
     compile libs.springBoot
     testCompile libs.testbase
     testCompile libs.springBootTest

@@ -10,10 +10,25 @@ Reference project for configuring Spring Boot for TLS:
 
 ## Configure certificates
 
-- In your browser, add the `test-ca.cer` certificate (in `src/test/resources`) as **CA** (allow it to trust web sites when asked).
-- In your browser, add the `test-client-keystore.p12` client certificate (in `src/test/resources`) as **Client certificate** (password: `Client-5ECr3T!`).
-
 Hint: to create your own certificates, use the **Frostnova Certificate Generator** at https://frostnova.ch/cert
+
+To install your own certificates:
+
+### Server
+
+Configure in `src/main/resources/application.yml`.
+
+### (Test) Client
+
+Configure in `src/test/resources/client.properties`.
+
+### Browser
+
+In your browser:
+
+- add the `test-ca.cer` certificate (in `src/test/resources`) as **CA** (allow it to trust web sites when asked).
+- add the `test-client-keystore.p12` client certificate (in `src/test/resources`) as **Client certificate** (password: `Client-5ECr3T!`).
+
 
 ## Build
 

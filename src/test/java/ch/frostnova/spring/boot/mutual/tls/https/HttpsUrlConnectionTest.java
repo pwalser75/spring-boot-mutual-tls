@@ -1,9 +1,10 @@
 package ch.frostnova.spring.boot.mutual.tls.https;
 
+import ch.frostnova.spring.boot.mutual.tls.TLSClientConfig;
 import ch.frostnova.spring.boot.mutual.tls.api.model.DailyWeather;
-import ch.frostnova.spring.boot.mutual.tls.ws.WeatherClient;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.net.ssl.*;
-import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.GeneralSecurityException;
@@ -33,12 +33,19 @@ public class HttpsUrlConnectionTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private TLSClientConfig clientConfig;
+
+    @Before
+    public void init() {
+        clientConfig = TLSClientConfig.load();
+    }
+
     @Test
     public void testDirectHTTPS() throws Exception {
 
-        KeyStore keystore = loadKeystore("/test-client-keystore.p12", "Client-5ECr3T!");
-        KeyStore truststore = loadKeystore("/test-client-truststore.p12", "Client-5ECr3T!");
-        String keyPassword = "Client-5ECr3T!";
+        KeyStore keystore = clientConfig.getKeystore();
+        KeyStore truststore = clientConfig.getTruststore();
+        String keyPassword = clientConfig.getKeystoreKeyPassword();
 
         URL url = new URL("https://localhost:" + port + "/api/weather/forecast");
 
@@ -74,15 +81,5 @@ public class HttpsUrlConnectionTest {
         SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
         sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
         return sslContext;
-    }
-
-    private static KeyStore loadKeystore(String resource, String password) {
-        try (InputStream in = WeatherClient.class.getResourceAsStream(resource)) {
-            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keyStore.load(in, password.toCharArray());
-            return keyStore;
-        } catch (Exception ex) {
-            throw new RuntimeException("Unable to load keystore '" + resource + "'", ex);
-        }
     }
 }
