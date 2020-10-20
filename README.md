@@ -2,6 +2,7 @@
 
 Reference project for configuring Spring Boot for TLS:
 - Enable HTTPS
+- Enable HTTP/2
 - Redirect HTTP to HTTPS
 - Proper setup of keystore and truststore
 - Client cert authentication
@@ -44,13 +45,13 @@ To start the Spring Boot application with grade, use:
     
 ## Ports
 
-- **HTTPS** port: **443**
-- **HTTP**  port: **80**, redirects to HTTPS port.
+- **HTTPS** port: **8443**
+- **HTTP**  port: **8080**, redirects to HTTPS port.
 
-Those ports are configured in `src/main/resources/application.yml` in case you want to change them (e.g. to 8443/8080).
+Those ports are configured in `src/main/resources/application.yml` in case you want to change them.
 
 ## Endpoints
 
-- Info page: https://localhost/info
-- Weather web service (REST): https://localhost/api/weather/forecast
+- Info page: https://localhost:8443/info
+- Weather web service (REST): https://localhost:8443/api/weather/forecast
 

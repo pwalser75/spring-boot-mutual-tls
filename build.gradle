@@ -1,27 +1,15 @@
-defaultTasks 'clean', 'build', 'install'
-
-buildscript {
-    repositories {
-        jcenter()
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.5.RELEASE")
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.21.0'
-    }
+plugins {
+    id 'com.github.ben-manes.versions' version '0.33.0'
+    id 'org.springframework.boot' version '2.3.4.RELEASE'
 }
 
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'com.github.ben-manes.versions'
+apply plugin: 'java-library'
 
 description = 'Spring Boot with mutual TLS'
 group = 'ch.frostnova'
 version = '1.0.0-SNAPSHOT'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+defaultTasks 'clean', 'build'
 
 repositories {
     jcenter()
@@ -41,24 +29,22 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-dependencyUpdates.resolutionStrategy = {
-    componentSelection { rules ->
-        rules.all { ComponentSelection selection ->
-            boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier ->
-                selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
-            }
-            if (rejected) {
-                selection.reject('Release candidate')
-            }
-        }
-    }
+def isNonStable = { String version ->
+    def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
+    def regex = /^[0-9,.v-]+(-r)?$/
+    return !stableKeyword && !(version ==~ regex)
 }
 
+dependencyUpdates {
+    rejectVersionIf {
+        isNonStable(it.candidate.version)
+    }
+}
 ext {
     checkVersion = '1.0.0'
-    junitVersion = '4.12'
-    mockitoVersion = '2.27.0'
-    springVersion = '2.1.5.RELEASE'
+    junitVersion = '4.13.1'
+    mockitoVersion = '3.5.15'
+    springVersion = '2.3.4.RELEASE'
 
     libs = [
             check         : [
@@ -76,7 +62,7 @@ ext {
             springBootTest: [
                     "org.springframework.boot:spring-boot-starter-test:${springVersion}",
                     "org.springframework.boot:spring-boot-starter-jersey:${springVersion}",
-                    "javax.xml.bind:jaxb-api:2.2.11"
+                    "javax.xml.bind:jaxb-api:2.3.1"
             ]
     ]
 }

@@ -1,8 +1,12 @@
 package ch.frostnova.spring.boot.mutual.tls.ws;
 
-import javax.ws.rs.*;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotAllowedException;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import javax.xml.ws.http.HTTPException;
 
 /**
  * Exception mapper which maps the HTTP error status codes (4xx, 5xx) to appropriate exceptions.
@@ -19,10 +23,10 @@ public final class ResponseExceptionMapper {
      * @param response       response from web service call
      * @param expectedStatus expected status (or stati)
      * @return response
-     * @throws HTTPException         if the response status indicates an error (400 or higher)
-     * @throws IllegalStateException when the status is not one of the expected stati
+     * @throws WebApplicationException if the response status indicates an error (400 or higher)
+     * @throws IllegalStateException   when the status is not one of the expected stati
      */
-    public static Response check(Response response, int... expectedStatus) throws HTTPException {
+    public static Response check(Response response, int... expectedStatus) throws WebApplicationException {
 
         check(response);
         for (int status : expectedStatus) {
@@ -38,9 +42,9 @@ public final class ResponseExceptionMapper {
      *
      * @param response response from web service call
      * @return response
-     * @throws HTTPException if the response status indicates an error (400 or higher).
+     * @throws WebApplicationException if the response status indicates an error (400 or higher).
      */
-    public static Response check(Response response) throws HTTPException {
+    public static Response check(Response response) throws WebApplicationException {
         if (response == null) {
             throw new NullPointerException("response must not be null");
         }

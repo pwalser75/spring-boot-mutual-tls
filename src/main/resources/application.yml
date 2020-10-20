@@ -3,11 +3,13 @@ spring:
     name: Spring Boot Mutual TLS
 
 server:
-  port: 443
-  ssl: &serverssl
+  port: 8443
+  http2:
+    enabled: true
+  ssl:
     enabled: true
     protocol: TLSv1.2
-    enabled-protocols: TLSv1.1+TLSv1.2
+    enabled-protocols: TLSv1.2+TLSv1.3
     ciphers: TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
     key-alias: "test-server"
     key-store: "classpath:test-server-keystore.p12"
@@ -18,7 +20,7 @@ server:
     client-auth: need
 http:
   server:
-    port: 80
+    port: 8080
 
 management:
   endpoints:
