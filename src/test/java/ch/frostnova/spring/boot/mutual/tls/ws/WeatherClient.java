@@ -54,9 +54,10 @@ public class WeatherClient implements AutoCloseable {
      *
      * @return forecast for the next few days
      */
-    public List<DailyWeather> getForecast() {
+    public List<DailyWeather> getForecast(int days) {
         Invocation invocation = client
                 .target(baseURL + "/api/weather/forecast")
+                .queryParam("days", days)
                 .request()
                 .buildGet();
 

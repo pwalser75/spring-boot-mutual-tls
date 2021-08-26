@@ -17,14 +17,6 @@ public class TLSClientConfig {
     private final KeyStore truststore;
     private final String keystoreKeyPassword;
 
-    public static TLSClientConfig load() {
-        return TLSClientConfig.load(TLSClientConfig.clientPropertiesResource);
-    }
-
-    public static TLSClientConfig load(String resource) {
-        return new TLSClientConfig(TLSClientConfig.readProperties(resource));
-    }
-
     public TLSClientConfig(Properties properties) {
 
         String keystorePath = properties.getProperty("client.keystore");
@@ -39,16 +31,12 @@ public class TLSClientConfig {
         truststore = TLSClientConfig.loadKeystore(TLSClientConfig.absoluteResource(truststorePath), truststorePassword);
     }
 
-    public KeyStore getKeystore() {
-        return keystore;
+    public static TLSClientConfig load() {
+        return TLSClientConfig.load(TLSClientConfig.clientPropertiesResource);
     }
 
-    public KeyStore getTruststore() {
-        return truststore;
-    }
-
-    public String getKeystoreKeyPassword() {
-        return keystoreKeyPassword;
+    public static TLSClientConfig load(String resource) {
+        return new TLSClientConfig(TLSClientConfig.readProperties(resource));
     }
 
     private static Properties readProperties(String resource) {
@@ -65,7 +53,6 @@ public class TLSClientConfig {
         return resourcePath == null || resourcePath.startsWith("/") ? resourcePath : "/" + resourcePath;
     }
 
-
     private static KeyStore loadKeystore(String resource, String password) {
         try (InputStream in = WeatherClient.class.getResourceAsStream(resource)) {
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -74,5 +61,17 @@ public class TLSClientConfig {
         } catch (Exception ex) {
             throw new RuntimeException("Unable to load keystore '" + resource + "'", ex);
         }
+    }
+
+    public KeyStore getKeystore() {
+        return keystore;
+    }
+
+    public KeyStore getTruststore() {
+        return truststore;
+    }
+
+    public String getKeystoreKeyPassword() {
+        return keystoreKeyPassword;
     }
 }

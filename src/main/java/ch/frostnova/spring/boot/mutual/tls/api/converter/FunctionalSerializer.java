@@ -13,7 +13,7 @@ import java.util.function.Function;
  */
 public abstract class FunctionalSerializer<T> extends JsonSerializer<T> {
 
-    private Function<T, String> converter;
+    private final Function<T, String> converter;
 
     /**
      * Constructor, expects a converter function.

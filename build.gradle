@@ -1,32 +1,89 @@
 plugins {
-    id 'com.github.ben-manes.versions' version '0.33.0'
-    id 'org.springframework.boot' version '2.4.0'
+    id 'java-library'
+    id "com.github.ben-manes.versions" version "0.39.0"
 }
-
-apply plugin: 'java-library'
 
 description = 'Spring Boot with mutual TLS'
 group = 'ch.frostnova'
 version = '1.0.0-SNAPSHOT'
 
+ext {
+    dateTimeFormat = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    buildDate = java.time.LocalDateTime.now()
+
+    springVersion = '2.5.+'
+    checkVersion = '1.0.+'
+
+    junitVersion = '5.7.+'
+    assertjVersion = '3.20.+'
+    mockitoVersion = '3.12.+'
+
+    jaxbVersion = '2.3.+'
+
+    libs = [
+            check         : [
+                    "ch.frostnova:check:${checkVersion}"
+            ],
+            testBase      : [
+                    "org.junit.jupiter:junit-jupiter-api:$junitVersion",
+                    "org.assertj:assertj-core:$assertjVersion",
+                    "org.mockito:mockito-core:$mockitoVersion"
+            ],
+            testRuntime   : [
+                    "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+            ],
+            springBoot    : [
+                    "org.springframework.boot:spring-boot-starter-web:$springVersion",
+                    "org.springframework.boot:spring-boot-starter-security:$springVersion",
+                    "org.springframework.boot:spring-boot-starter-actuator:$springVersion"
+            ],
+            springBootTest: [
+                    "org.springframework.boot:spring-boot-starter-test:$springVersion",
+                    "org.springframework.boot:spring-boot-starter-jersey:$springVersion",
+                    "javax.xml.bind:jaxb-api:$jaxbVersion"
+            ]
+    ]
+}
+
+dependencies {
+    implementation libs.check
+    implementation libs.springBoot
+
+    testImplementation libs.testBase
+    testImplementation libs.springBootTest
+
+    testRuntimeOnly libs.testRuntime
+}
+
 defaultTasks 'clean', 'build'
 
 repositories {
-    jcenter()
     mavenLocal()
     mavenCentral()
 }
 
 java {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+    withJavadocJar()
+    withSourcesJar()
+}
+test {
+    useJUnitPlatform()
+}
+jar {
+    manifest {
+        attributes(
+                "Name": project.name,
+                "Version": project.version,
+                "Build-Date": dateTimeFormat.format(buildDate)
+        )
+    }
 }
 
-jar { duplicatesStrategy = 'exclude' }
-
-compileJava.options.encoding = 'UTF-8'
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+repositories {
+    mavenCentral()
 }
 
 def isNonStable = { String version ->
@@ -35,43 +92,10 @@ def isNonStable = { String version ->
     return !stableKeyword && !(version ==~ regex)
 }
 
-dependencyUpdates {
+tasks.named("dependencyUpdates").configure {
     rejectVersionIf {
         isNonStable(it.candidate.version)
     }
-}
-ext {
-    checkVersion = '1.0.0'
-    junitVersion = '4.13.1'
-    mockitoVersion = '3.5.15'
-    springVersion = '2.4.0'
-
-    libs = [
-            check         : [
-                    "ch.frostnova:check:${checkVersion}"
-            ],
-            testbase      : [
-                    "junit:junit:${junitVersion}",
-                    "org.mockito:mockito-core:${mockitoVersion}"
-            ],
-            springBoot    : [
-                    "org.springframework.boot:spring-boot-starter-web:${springVersion}",
-                    "org.springframework.boot:spring-boot-starter-security:${springVersion}",
-                    "org.springframework.boot:spring-boot-starter-actuator:${springVersion}"
-            ],
-            springBootTest: [
-                    "org.springframework.boot:spring-boot-starter-test:${springVersion}",
-                    "org.springframework.boot:spring-boot-starter-jersey:${springVersion}",
-                    "javax.xml.bind:jaxb-api:2.3.1"
-            ]
-    ]
-}
-
-dependencies {
-    compile libs.check
-    compile libs.springBoot
-    testCompile libs.testbase
-    testCompile libs.springBootTest
 }
 
 task start(dependsOn: ['assemble', 'bootRun']) {
