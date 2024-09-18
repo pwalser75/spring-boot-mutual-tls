@@ -31,12 +31,11 @@ server:
       - TLS_DHE_RSA_WITH_AES_256_CBC_SHA
       - TLS_DHE_RSA_WITH_AES_256_CBC_SHA256
       - TLS_DHE_RSA_WITH_AES_256_GCM_SHA384
-    key-alias: "test-server"
-    key-store: "classpath:test-server-keystore.p12"
-    key-store-password: "Server-5ECr3T!"
-    key-password: "Server-5ECr3T!"
-    trust-store: "classpath:test-server-truststore.p12"
-    trust-store-password: "Server-5ECr3T!"
+    key-alias: "wap-server"
+    key-store: "classpath:wap-server-keystore.p12"
+    key-store-password: "server-secret"
+    trust-store: "classpath:wap-server-truststore.p12"
+    trust-store-password: "server-secret"
     # require mutual TLS authentication
     client-auth: need
 http:

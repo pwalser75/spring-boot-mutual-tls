@@ -56,7 +56,7 @@ class HttpsUrlConnectionTest {
 
     private static SSLContext createSSLContext(KeyStore keyStore, String keyStorePassword, KeyStore truststore) throws GeneralSecurityException {
         var keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        keyManagerFactory.init(keyStore, keyStorePassword != null ? keyStorePassword.toCharArray() : null);
+        keyManagerFactory.init(keyStore, keyStorePassword != null && !keyStorePassword.isEmpty() ? keyStorePassword.toCharArray() : null);
 
         var trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(truststore);
@@ -76,7 +76,7 @@ class HttpsUrlConnectionTest {
 
         var keystore = clientConfig.getKeystore();
         var truststore = clientConfig.getTruststore();
-        var keyPassword = clientConfig.getKeystoreKeyPassword();
+        var keyPassword = clientConfig.getKeystorePassword();
 
         var url = new URL("https://localhost:" + port + "/api/weather/forecast");
 
