@@ -17,14 +17,13 @@ public class TLSClientConfig {
 
     private final KeyStore keystore;
     private final KeyStore truststore;
-    private final String keystoreKeyPassword;
+    private final String keystorePassword;
 
     public TLSClientConfig(Properties properties) {
         var keystorePath = properties.getProperty("client.keystore");
-        var keystorePassword = properties.getProperty("client.keystore.password", "");
+        keystorePassword = properties.getProperty("client.keystore.password", "");
         var truststorePath = properties.getProperty("client.truststore");
         var truststorePassword = properties.getProperty("client.truststore.password", "");
-        keystoreKeyPassword = properties.getProperty("client.keystore.keypassword", "");
         required(keystorePath, "client.keystore", notBlank());
         required(keystorePath, "client.truststore", notBlank());
 
@@ -68,11 +67,11 @@ public class TLSClientConfig {
         return keystore;
     }
 
-    public KeyStore getTruststore() {
-        return truststore;
+    public String getKeystorePassword() {
+        return keystorePassword;
     }
 
-    public String getKeystoreKeyPassword() {
-        return keystoreKeyPassword;
+    public KeyStore getTruststore() {
+        return truststore;
     }
 }

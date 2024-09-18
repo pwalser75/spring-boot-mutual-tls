@@ -34,7 +34,6 @@ server:
     key-alias: "test-server"
     key-store: "classpath:test-server-keystore.p12"
     key-store-password: "Server-5ECr3T!"
-    key-password: "Server-5ECr3T!"
     trust-store: "classpath:test-server-truststore.p12"
     trust-store-password: "Server-5ECr3T!"
     # require mutual TLS authentication

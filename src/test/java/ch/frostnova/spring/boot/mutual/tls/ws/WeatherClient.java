@@ -37,7 +37,7 @@ public class WeatherClient implements AutoCloseable {
 
         var keystore = clientConfig.getKeystore();
         var truststore = clientConfig.getTruststore();
-        var keyPassword = clientConfig.getKeystoreKeyPassword();
+        var keyPassword = clientConfig.getKeystorePassword();
 
         return ClientBuilder.newBuilder()
                 .keyStore(keystore, keyPassword)
