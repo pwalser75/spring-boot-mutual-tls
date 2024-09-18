@@ -1,6 +1,7 @@
 # Spring Boot example with mutual TLS
 
 Reference project for configuring Spring Boot for TLS:
+
 - Enable HTTPS
 - Enable HTTP/2
 - Redirect HTTP to HTTPS
@@ -28,21 +29,25 @@ Configure in `src/test/resources/client.properties`.
 In your browser:
 
 - add the `test-ca.cer` certificate (in `src/test/resources`) as **CA** (allow it to trust web sites when asked).
-- add the `test-client-keystore.p12` client certificate (in `src/test/resources`) as **Client certificate** (password: `Client-5ECr3T!`).
-
+- add the `test-client-keystore.p12` client certificate (in `src/test/resources`) as **Client certificate** (password:
+  `Client-5ECr3T!`).
 
 ## Build
 
 To build this project with Gradle (default tasks: _clean build install_):
 
-    gradle
-    
+```bash
+./gradlew
+```
+
 ## Start
-    
+
 To start the Spring Boot application with grade, use:
-    
-    gradle start
-    
+
+```bash
+./gradlew start
+```
+
 ## Ports
 
 - **HTTPS** port: **8443**

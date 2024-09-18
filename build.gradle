@@ -1,7 +1,8 @@
 plugins {
-    id 'java-library'
-    id 'org.springframework.boot' version '2.5.4'
-    id "com.github.ben-manes.versions" version "0.39.0"
+    id 'java'
+    id 'org.springframework.boot' version '3.3.3'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id "com.github.ben-manes.versions" version "0.51.0"
 }
 
 description = 'Spring Boot with mutual TLS'
@@ -9,17 +10,12 @@ group = 'ch.frostnova'
 version = '1.0.0-SNAPSHOT'
 
 ext {
-    dateTimeFormat = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    buildDate = java.time.LocalDateTime.now()
-
-    springVersion = '2.5.+'
+    springVersion = '3.3.+'
     checkVersion = '1.0.+'
 
-    junitVersion = '5.7.+'
-    assertjVersion = '3.20.+'
-    mockitoVersion = '3.12.+'
-
-    jaxbVersion = '2.3.+'
+    junitVersion = '5.9.+'
+    assertjVersion = '3.26.+'
+    mockitoVersion = '5.13.+'
 
     libs = [
             check         : [
@@ -40,8 +36,7 @@ ext {
             ],
             springBootTest: [
                     "org.springframework.boot:spring-boot-starter-test:$springVersion",
-                    "org.springframework.boot:spring-boot-starter-jersey:$springVersion",
-                    "javax.xml.bind:jaxb-api:$jaxbVersion"
+                    "org.springframework.boot:spring-boot-starter-jersey:$springVersion"
             ]
     ]
 }
@@ -59,32 +54,17 @@ dependencies {
 defaultTasks 'clean', 'build'
 
 repositories {
-    mavenLocal()
     mavenCentral()
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
-    }
-    withJavadocJar()
-    withSourcesJar()
-}
-test {
-    useJUnitPlatform()
-}
-jar {
-    manifest {
-        attributes(
-                "Name": project.name,
-                "Version": project.version,
-                "Build-Date": dateTimeFormat.format(buildDate)
-        )
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
-repositories {
-    mavenCentral()
+tasks.named('test') {
+    useJUnitPlatform()
 }
 
 def isNonStable = { String version ->

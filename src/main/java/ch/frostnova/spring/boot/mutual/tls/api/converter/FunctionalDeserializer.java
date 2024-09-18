@@ -29,7 +29,7 @@ public abstract class FunctionalDeserializer<T> extends JsonDeserializer<T> {
 
     @Override
     public T deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        String value = jsonParser.getValueAsString();
+        var value = jsonParser.getValueAsString();
         if (value == null) {
             return null;
         }

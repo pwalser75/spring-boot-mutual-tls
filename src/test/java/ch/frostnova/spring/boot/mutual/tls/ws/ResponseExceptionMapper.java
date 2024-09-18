@@ -1,12 +1,12 @@
 package ch.frostnova.spring.boot.mutual.tls.ws;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NotAllowedException;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.ForbiddenException;
+import jakarta.ws.rs.InternalServerErrorException;
+import jakarta.ws.rs.NotAllowedException;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 
 /**
  * Exception mapper which maps the HTTP error status codes (4xx, 5xx) to appropriate exceptions.
@@ -29,7 +29,7 @@ public final class ResponseExceptionMapper {
     public static Response check(Response response, int... expectedStatus) throws WebApplicationException {
 
         check(response);
-        for (int status : expectedStatus) {
+        for (var status : expectedStatus) {
             if (response.getStatus() == status) {
                 return response;
             }
@@ -48,7 +48,7 @@ public final class ResponseExceptionMapper {
         if (response == null) {
             throw new NullPointerException("response must not be null");
         }
-        int status = response.getStatus();
+        var status = response.getStatus();
         if (status >= 400) {
             if (status == 400) {
                 throw new BadRequestException(response.readEntity(String.class));

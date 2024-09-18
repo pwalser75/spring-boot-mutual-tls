@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -44,9 +44,9 @@ class HttpsUrlConnectionTest {
 
     private static URLConnection getSecuredConnection(URL url, SSLSocketFactory socketFactory) throws Exception {
 
-        URLConnection connection = url.openConnection();
+        var connection = url.openConnection();
         if (connection instanceof HttpsURLConnection) {
-            HttpsURLConnection secureConnection = (HttpsURLConnection) connection;
+            var secureConnection = (HttpsURLConnection) connection;
             secureConnection.setConnectTimeout(500);
             secureConnection.setReadTimeout(1500);
             secureConnection.setSSLSocketFactory(socketFactory);
@@ -55,13 +55,13 @@ class HttpsUrlConnectionTest {
     }
 
     private static SSLContext createSSLContext(KeyStore keyStore, String keyStorePassword, KeyStore truststore) throws GeneralSecurityException {
-        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        var keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
         keyManagerFactory.init(keyStore, keyStorePassword != null ? keyStorePassword.toCharArray() : null);
 
-        TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        var trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(truststore);
 
-        SSLContext sslContext = SSLContext.getInstance("TLSv1.3");
+        var sslContext = SSLContext.getInstance("TLSv1.3");
         sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
         return sslContext;
     }
@@ -74,17 +74,17 @@ class HttpsUrlConnectionTest {
     @Test
     void testDirectHTTPS() throws Exception {
 
-        KeyStore keystore = clientConfig.getKeystore();
-        KeyStore truststore = clientConfig.getTruststore();
-        String keyPassword = clientConfig.getKeystoreKeyPassword();
+        var keystore = clientConfig.getKeystore();
+        var truststore = clientConfig.getTruststore();
+        var keyPassword = clientConfig.getKeystoreKeyPassword();
 
-        URL url = new URL("https://localhost:" + port + "/api/weather/forecast");
+        var url = new URL("https://localhost:" + port + "/api/weather/forecast");
 
-        SSLContext sslContext = createSSLContext(keystore, keyPassword, truststore);
-        SSLSocketFactory socketFactory = sslContext.getSocketFactory();
-        URLConnection urlConnection = getSecuredConnection(url, socketFactory);
+        var sslContext = createSSLContext(keystore, keyPassword, truststore);
+        var socketFactory = sslContext.getSocketFactory();
+        var urlConnection = getSecuredConnection(url, socketFactory);
 
-        List<DailyWeather> weatherForecast = objectMapper.readValue(urlConnection.getInputStream(), new TypeReference<List<DailyWeather>>() {
+        var weatherForecast = objectMapper.readValue(urlConnection.getInputStream(), new TypeReference<List<DailyWeather>>() {
         });
 
         assertThat(weatherForecast).isNotNull().isNotEmpty();

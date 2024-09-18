@@ -1,34 +1,40 @@
 package ch.frostnova.spring.boot.mutual.tls;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.joining;
+
 /**
- * X.509 authentication settings
+ * X509 authentication configuration.
  */
+@Configuration
 @EnableWebSecurity
-public class X509AuthenticationServer extends WebSecurityConfigurerAdapter {
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class X509Config {
 
     private final static String ROLE_PREFIX = "ROLE_";
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        // Mutual TLS, extract user name from client certificate (CN field)
-        http.authorizeRequests()
-                .anyRequest().authenticated()
-                .and()
-                .x509()
-                .subjectPrincipalRegex("CN=([^,]*)")
-                .userDetailsService(userDetailsService());
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(requests -> requests
+                        .anyRequest()
+                        .authenticated())
+                .x509(x509 -> x509
+                        .subjectPrincipalRegex("CN=(.*?)(?:,|$)")
+                        .userDetailsService(userDetailsService()));
+        return http.build();
     }
 
     @Bean
@@ -38,7 +44,7 @@ public class X509AuthenticationServer extends WebSecurityConfigurerAdapter {
                 AuthorityUtils.commaSeparatedStringToAuthorityList(
                         getRolesForUser(username).stream()
                                 .map(r -> ROLE_PREFIX + r)
-                                .collect(Collectors.joining(","))));
+                                .collect(joining(","))));
     }
 
     private Set<String> getRolesForUser(String username) {

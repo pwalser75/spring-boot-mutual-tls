@@ -1,16 +1,14 @@
 package ch.frostnova.spring.boot.mutual.tls.servlet;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.security.Principal;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -29,7 +27,7 @@ public class ExampleServlet extends HttpServlet {
 
         resp.setContentType("text/html");
 
-        PrintWriter writer = new PrintWriter(resp.getWriter());
+        var writer = new PrintWriter(resp.getWriter());
 
         writer.write("<html>");
         writer.write("<head>");
@@ -47,8 +45,8 @@ public class ExampleServlet extends HttpServlet {
         writer.write("<body>");
         writer.write("<h4>Example Servlet</h4>");
 
-        Principal userPrincipal = req.getUserPrincipal();
-        String userName = userPrincipal != null ? userPrincipal.getName() : "unknown visitor";
+        var userPrincipal = req.getUserPrincipal();
+        var userName = userPrincipal != null ? userPrincipal.getName() : "unknown visitor";
         writer.write("<h1>Welcome, " + userName + ".</h1>");
 
         if (userPrincipal != null) {
@@ -74,33 +72,33 @@ public class ExampleServlet extends HttpServlet {
 
         writer.write("<h3>Headers</h3>");
         writer.write("<ul>");
-        Enumeration<String> headers = req.getHeaderNames();
+        var headers = req.getHeaderNames();
         if (!headers.hasMoreElements()) {
             writer.write("none");
         }
         while (headers.hasMoreElements()) {
-            String header = headers.nextElement();
+            var header = headers.nextElement();
             writeListEntry(writer, header, req.getHeader(header));
         }
         writer.write("</ul>");
 
         writer.write("<h3>Request Parameters</h3>");
         writer.write("<ul>");
-        Enumeration<String> parameters = req.getParameterNames();
+        var parameters = req.getParameterNames();
         if (!parameters.hasMoreElements()) {
             writer.write("none");
         }
         while (parameters.hasMoreElements()) {
-            String parameter = parameters.nextElement();
+            var parameter = parameters.nextElement();
             writeListEntry(writer, parameter, req.getParameter(parameter));
         }
         writer.write("</ul>");
 
         writer.write("<h3>Cookies</h3>");
         writer.write("<ul>");
-        Cookie[] cookies = req.getCookies();
+        var cookies = req.getCookies();
         if (cookies != null) {
-            for (Cookie cookie : cookies) {
+            for (var cookie : cookies) {
                 writeListEntry(writer, cookie.getName(), cookie.getValue());
             }
         }

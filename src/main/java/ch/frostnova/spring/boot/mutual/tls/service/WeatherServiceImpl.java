@@ -19,14 +19,14 @@ public class WeatherServiceImpl implements WeatherService {
     @Override
     public List<DailyWeather> getForecast(int days) {
         List<DailyWeather> forecast = new LinkedList<>();
-        LocalDate today = LocalDate.now();
-        for (int i = 0; i < days; i++) {
+        var today = LocalDate.now();
+        for (var i = 0; i < days; i++) {
 
-            WeatherCondition[] conditions = WeatherCondition.values();
-            WeatherCondition randomCondition = conditions[(int) (Math.random() * conditions.length)];
-            double randomTemperature = randomCondition.getTempMin() + Math.random() * (randomCondition.getTempMax() - randomCondition.getTempMin());
+            var conditions = WeatherCondition.values();
+            var randomCondition = conditions[(int) (Math.random() * conditions.length)];
+            var randomTemperature = randomCondition.getTempMin() + Math.random() * (randomCondition.getTempMax() - randomCondition.getTempMin());
 
-            DailyWeather dailyWeather = new DailyWeather();
+            var dailyWeather = new DailyWeather();
             dailyWeather.setDate(today.plus(i, ChronoUnit.DAYS));
             dailyWeather.setWeatherCondition(randomCondition);
             dailyWeather.setTemperatureCelsius((int) (10 * (randomTemperature) / 10d));

@@ -8,11 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,12 +37,11 @@ class WeatherClientTest {
 
     @Test
     void testGetWeather() {
-
-        final String baseURL = "https://localhost:" + port;
-        log.info("BASE URL: " + baseURL);
-        try (final WeatherClient weatherClient = new WeatherClient(clientConfig, baseURL)) {
-            int days = ThreadLocalRandom.current().nextInt(1, 10);
-            List<DailyWeather> weatherForecast = weatherClient.getForecast(days);
+        final var baseURL = "https://localhost:" + port;
+        log.info("BASE URL: {}", baseURL);
+        try (final var weatherClient = new WeatherClient(clientConfig, baseURL)) {
+            var days = ThreadLocalRandom.current().nextInt(1, 10);
+            var weatherForecast = weatherClient.getForecast(days);
             assertThat(weatherForecast).isNotEmpty().hasSize(days);
             assertThat(weatherForecast).extracting(DailyWeather::getDate)
                     .allSatisfy(date -> assertThat(date).isAfterOrEqualTo(LocalDate.now()));

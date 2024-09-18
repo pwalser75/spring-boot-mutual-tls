@@ -5,9 +5,11 @@ import ch.frostnova.util.check.Check;
 import ch.frostnova.util.check.CheckString;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.KeyStore;
 import java.util.Properties;
+
+import static ch.frostnova.util.check.Check.required;
+import static ch.frostnova.util.check.CheckString.notBlank;
 
 public class TLSClientConfig {
 
@@ -18,14 +20,13 @@ public class TLSClientConfig {
     private final String keystoreKeyPassword;
 
     public TLSClientConfig(Properties properties) {
-
-        String keystorePath = properties.getProperty("client.keystore");
-        String keystorePassword = properties.getProperty("client.keystore.password", "");
-        String truststorePath = properties.getProperty("client.truststore");
-        String truststorePassword = properties.getProperty("client.truststore.password", "");
+        var keystorePath = properties.getProperty("client.keystore");
+        var keystorePassword = properties.getProperty("client.keystore.password", "");
+        var truststorePath = properties.getProperty("client.truststore");
+        var truststorePassword = properties.getProperty("client.truststore.password", "");
         keystoreKeyPassword = properties.getProperty("client.keystore.keypassword", "");
-        Check.required(keystorePath, "client.keystore", CheckString.notBlank());
-        Check.required(keystorePath, "client.truststore", CheckString.notBlank());
+        required(keystorePath, "client.keystore", notBlank());
+        required(keystorePath, "client.truststore", notBlank());
 
         keystore = TLSClientConfig.loadKeystore(TLSClientConfig.absoluteResource(keystorePath), keystorePassword);
         truststore = TLSClientConfig.loadKeystore(TLSClientConfig.absoluteResource(truststorePath), truststorePassword);
@@ -40,8 +41,8 @@ public class TLSClientConfig {
     }
 
     private static Properties readProperties(String resource) {
-        Properties properties = new Properties();
-        try (InputStream in = TLSClientConfig.class.getResourceAsStream(TLSClientConfig.absoluteResource(resource))) {
+        var properties = new Properties();
+        try (var in = TLSClientConfig.class.getResourceAsStream(TLSClientConfig.absoluteResource(resource))) {
             properties.load(in);
             return properties;
         } catch (IOException ex) {
@@ -54,8 +55,8 @@ public class TLSClientConfig {
     }
 
     private static KeyStore loadKeystore(String resource, String password) {
-        try (InputStream in = WeatherClient.class.getResourceAsStream(resource)) {
-            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        try (var in = WeatherClient.class.getResourceAsStream(resource)) {
+            var keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             keyStore.load(in, password.toCharArray());
             return keyStore;
         } catch (Exception ex) {
