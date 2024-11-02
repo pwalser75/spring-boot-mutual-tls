@@ -1,8 +1,8 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.3.3'
-    id 'io.spring.dependency-management' version '1.1.6'
-    id "com.github.ben-manes.versions" version "0.51.0"
+    id 'org.springframework.boot' version '3.3.+'
+    id 'io.spring.dependency-management' version '1.1.+'
+    id "com.github.ben-manes.versions" version "0.51.+"
 }
 
 description = 'Spring Boot with mutual TLS'
@@ -13,30 +13,31 @@ ext {
     springVersion = '3.3.+'
     checkVersion = '1.0.+'
 
-    junitVersion = '5.9.+'
+    junitVersion = '5.11.+'
+    junitPlatformVersion = '1.11.+'
     assertjVersion = '3.26.+'
-    mockitoVersion = '5.13.+'
+    mockitoVersion = '5.14.+'
 
     libs = [
             check         : [
                     "ch.frostnova:check:${checkVersion}"
             ],
             testBase      : [
-                    "org.junit.jupiter:junit-jupiter-api:$junitVersion",
+                    "org.junit.jupiter:junit-jupiter:$junitVersion",
                     "org.assertj:assertj-core:$assertjVersion",
                     "org.mockito:mockito-core:$mockitoVersion"
             ],
             testRuntime   : [
-                    "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+                    "org.junit.platform:junit-platform-launcher:$junitPlatformVersion"
             ],
             springBoot    : [
-                    "org.springframework.boot:spring-boot-starter-web:$springVersion",
-                    "org.springframework.boot:spring-boot-starter-security:$springVersion",
-                    "org.springframework.boot:spring-boot-starter-actuator:$springVersion"
+                    "org.springframework.boot:spring-boot-starter-web",
+                    "org.springframework.boot:spring-boot-starter-security",
+                    "org.springframework.boot:spring-boot-starter-actuator"
             ],
             springBootTest: [
-                    "org.springframework.boot:spring-boot-starter-test:$springVersion",
-                    "org.springframework.boot:spring-boot-starter-jersey:$springVersion"
+                    "org.springframework.boot:spring-boot-starter-test",
+                    "org.springframework.boot:spring-boot-starter-jersey"
             ]
     ]
 }
@@ -50,7 +51,6 @@ dependencies {
 
     testRuntimeOnly libs.testRuntime
 }
-
 defaultTasks 'clean', 'build'
 
 repositories {
@@ -63,9 +63,13 @@ java {
     }
 }
 
-tasks.named('test') {
+test {
     useJUnitPlatform()
+    testLogging {
+        events "failed"
+    }
 }
+
 
 def isNonStable = { String version ->
     def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
